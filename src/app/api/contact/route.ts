@@ -5,7 +5,7 @@ export async function POST(req: Request) {
   try {
     // Parse the request body
     const data = await req.json();
-    const { name, email, company, message, budget } = data;
+    const { name, email, company, message, budget,categories } = data;
 
     // Create transporter
     const transporter = nodemailer.createTransport({
@@ -18,6 +18,11 @@ export async function POST(req: Request) {
       },
     });
 
+    // Construct email body with categories
+    const categoriesText = categories && categories.length > 0 
+        ? `Interested Categories: ${categories.join(", ")}` 
+        : "No categories selected";
+
     // Construct email body
     const emailBody = `
       New Contact Form Submission:
@@ -26,7 +31,7 @@ export async function POST(req: Request) {
       Email: ${email}
       Company: ${company}
       Budget: ${budget}
-      
+      ${categoriesText}
       Message:
       ${message}
     `;
