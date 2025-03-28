@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { ToastContainer,toast } from 'react-toastify';
+import {toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as yup from "yup";
 import { useForm, Resolver } from "react-hook-form";
@@ -52,7 +52,10 @@ const ContactForm = ({
   onCategoryToggle 
 }: ContactFormProps) => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-
+  const [formMessage, setFormMessage] = useState<{
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
   
   const { 
     register, 
@@ -92,15 +95,31 @@ const ContactForm = ({
       const result = await response.json();
       
       if (response.ok) {
-        toast.success(result.message || "Message sent successfully!");
+        //toast.success(result.message || "Message sent successfully!");
+        setFormMessage({
+          type: 'success',
+          text: result.message || "Message sent successfully!"
+        });
+
         reset();
         setActiveCategory(null);
+
+        setTimeout(() => {
+          setFormMessage(null);
+        }, 5000);
+
       } else {
-        toast.error(result.error || "Failed to send message. Please try again.");
+        setFormMessage({
+          type: 'error',
+          text: result.error || "Failed to send message. Please try again."
+        });
       }
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error("Something went wrong. Please try again.");
+      setFormMessage({
+        type: 'error',
+        text: "Something went wrong. Please try again."
+      });
     }
   };
 
@@ -230,18 +249,30 @@ const ContactForm = ({
             </div>
           </div>
 
-          <ToastContainer 
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      
+      {/* Custom Message Div with Bootstrap Classes */}
+
+        {formMessage && (
+          <div className={`
+            alert 
+            ${formMessage.type === 'success' 
+              ? 'alert-success' 
+              : 'alert-danger'}
+            alert-dismissible 
+            fade 
+            show 
+            text-center
+          `}>
+            {formMessage.text}
+            <button 
+              type="button" 
+              className="btn-close" 
+              data-bs-dismiss="alert" 
+              aria-label="Close"
+              onClick={() => setFormMessage(null)}
+            ></button>
+          </div>
+        )}
 
         </div>
       </div>
