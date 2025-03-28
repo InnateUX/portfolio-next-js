@@ -106,7 +106,7 @@ const ContactForm = ({
 
         setTimeout(() => {
           setFormMessage(null);
-        }, 5000);
+        }, 10000);
 
       } else {
         setFormMessage({
@@ -253,7 +253,7 @@ const ContactForm = ({
       {/* Custom Message Div with Bootstrap Classes */}
 
         {formMessage && (
-          <div className={`
+          <div className={`mt-5 
             alert 
             ${formMessage.type === 'success' 
               ? 'alert-success' 
@@ -262,6 +262,8 @@ const ContactForm = ({
             fade 
             show 
             text-center
+            fs-6
+            py-2
           `}>
             {formMessage.text}
             <button 
