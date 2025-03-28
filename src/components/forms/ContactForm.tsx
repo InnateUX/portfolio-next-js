@@ -141,23 +141,22 @@ const ContactForm = ({
               <div className="contact-inner__category mb-45">
                 <h4 className="contact-inner__category-title">I'm interested in...</h4>
                 <div className="contact-inner__category-wrapper">
-                  {categories.map((item) => (
-                    <label
-                      key={item.id}
-                      htmlFor={`category-${item.id}`}
-                      className={`contact-category-btn ${selectedCategories.includes(item.id) ? 'active' : ''}`}
-                      onClick={() => onCategoryToggle?.(item.id)}
-                    >
-                      <input
-                        type="checkbox"
-                        id={`category-${item.id}`}
-                        checked={selectedCategories.includes(item.id)}
-                        onChange={() => onCategoryToggle?.(item.id)}
-                        className="hidden-checkbox"
-                      />
-                      {item.title}
-                    </label>
-                  ))}
+                {categories.map((item) => (
+                  <label
+                    key={item.id}
+                    htmlFor={`category-${item.id}`}
+                    className={`contact-category-btn ${selectedCategories.includes(item.id) ? 'active' : ''}`}
+                  >
+                    <input
+                      type="checkbox"
+                      id={`category-${item.id}`}
+                      checked={selectedCategories.includes(item.id)}
+                      onChange={() => onCategoryToggle?.(item.id)}
+                      className="hidden-checkbox"
+                    />
+                    {item.title}
+                  </label>
+                ))}
                   <p className="form_error">{errors.categories?.message}</p>
                 </div>
               </div>

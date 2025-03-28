@@ -44,6 +44,7 @@ const ContactArea = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   // Toggle selection using string-based IDs
+
   const toggleSelection = (id: string) => {
     setSelectedCategories((prevSelected) =>
       prevSelected.includes(id)
