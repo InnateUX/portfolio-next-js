@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState,useCallback } from 'react';
 import Image from 'next/image';
 //import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -45,13 +45,21 @@ const ContactArea = () => {
 
   // Toggle selection using string-based IDs
 
-  const toggleSelection = (id: string) => {
-    setSelectedCategories((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((categoryId) => categoryId !== id)
-        : [...prevSelected, id]
+  // const toggleSelection = (id: string) => {
+  //   setSelectedCategories((prevSelected) =>
+  //     prevSelected.includes(id)
+  //       ? prevSelected.filter((categoryId) => categoryId !== id)
+  //       : [...prevSelected, id]
+  //   );
+  // };
+
+  const toggleSelection = useCallback((id: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(id) 
+        ? prev.filter(c => c !== id) 
+        : [...prev, id]
     );
-  };
+  }, []);
 
   return (
     <>

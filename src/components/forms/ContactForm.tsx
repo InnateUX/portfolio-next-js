@@ -5,6 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import * as yup from "yup";
 import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useWatch } from 'react-hook-form';
+
 
 interface FormData {
   name: string;
@@ -51,29 +53,33 @@ const ContactForm = ({
 }: ContactFormProps) => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
+  
   const { 
     register, 
     handleSubmit, 
     reset, 
     setValue, 
+    control,
+    watch,
     formState: { errors, isSubmitting } 
   } = useForm<FormData>({
     resolver: yupResolver(schema) as Resolver<FormData>,
-    mode: 'onBlur',
     defaultValues: {
-      categories: selectedCategories || [],
+      categories: selectedCategories,
       name: '',
       email: '',
       company: '',
       message: '',
       budget: ''
-    },
+    }
   });
 
   useEffect(() => {
     // Initialize form values after component mounts
     setValue('categories', selectedCategories || []);
   }, [selectedCategories, setValue]);
+
+  const watchedBudget = useWatch({ control, name: 'budget' });
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -151,7 +157,9 @@ const ContactForm = ({
                       type="checkbox"
                       id={`category-${item.id}`}
                       checked={selectedCategories.includes(item.id)}
-                      onChange={() => onCategoryToggle?.(item.id)}
+                      onChange={() => {
+                        onCategoryToggle?.(item.id);
+                      }}
                       className="hidden-checkbox"
                     />
                     {item.title}
@@ -167,7 +175,7 @@ const ContactForm = ({
             <div className="contact-inner__category mb-45">
               <h4 className="contact-inner__category-title">Project budget (USD)</h4>
               <div className="contact-inner__category-wrapper">
-                {budgetCategories.map((item) => (
+                {/* {budgetCategories.map((item) => (
                   <label
                     key={item.id}
                     htmlFor={item.id}
@@ -186,6 +194,24 @@ const ContactForm = ({
                     id={item.id}
                     hidden
                   />
+                ))} */}
+
+                {budgetCategories.map((item) => (
+                  <React.Fragment key={item.id}>
+                    <input
+                      type="radio"
+                      id={item.id}
+                      value={item.id}
+                      {...register("budget")}
+                      className="hidden-radio"
+                    />
+                    <label
+                      htmlFor={item.id}
+                      className={`contact-budget-btn ${watch('budget') === item.id ? 'active' : ''}`}
+                    >
+                      {item.title}
+                    </label>
+                  </React.Fragment>
                 ))}
                 <p className="form_error">{errors.budget?.message}</p>
               </div>
