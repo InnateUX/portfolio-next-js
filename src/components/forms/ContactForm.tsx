@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as yup from "yup";
 import { useForm, Resolver } from "react-hook-form";
@@ -92,7 +92,7 @@ const ContactForm = ({
       const result = await response.json();
       
       if (response.ok) {
-        //toast.success(result.message || "Message sent successfully!");
+        toast.success(result.message || "Message sent successfully!");
         reset();
         setActiveCategory(null);
       } else {
@@ -100,7 +100,7 @@ const ContactForm = ({
       }
     } catch (error) {
       console.error("Submission error:", error);
-      //toast.error("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
@@ -229,6 +229,20 @@ const ContactForm = ({
               </button>
             </div>
           </div>
+
+          <ToastContainer 
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+
         </div>
       </div>
     </form>
