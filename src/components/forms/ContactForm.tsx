@@ -1,18 +1,19 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 
+// Ensure 'categories' is a string array with a default empty array
 interface FormData {
   name: string;
   email: string;
   company: string;
   message: string;
   budget: string;
-  categories: string[]; // Add categories to form data
+  categories: string[];
 }
 
 interface Category {
@@ -21,18 +22,19 @@ interface Category {
 }
 
 interface ContactFormProps {
-  categories?: Category[]; // Add categories prop
-  selectedCategories?: string[]; // Add selected categories prop
-  onCategoryToggle?: (id: string) => void; // Add category toggle handler
+  categories?: Category[];
+  selectedCategories?: string[];
+  onCategoryToggle?: (id: string) => void;
 }
 
+// Update schema to ensure type compatibility
 const schema = yup.object({
   name: yup.string().required("Name is required"),
   email: yup.string().required("Email is required").email("Invalid email"),
   company: yup.string().required("Company is required"),
   message: yup.string().required("Message is required"),
   budget: yup.string().required("Please select a budget"),
-  categories: yup.array().min(1, "Please select at least one category"), // Add validation for categories
+  categories: yup.array().of(yup.string()).min(1, "Please select at least one category"),
 }).required();
 
 const budgetCategories = [
@@ -52,25 +54,31 @@ const ContactForm = ({
   const [isClient, setIsClient] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
+  // Explicitly type the form with FormData
   const { 
     register, 
     handleSubmit, 
     reset, 
     setValue, 
-    watch,
     formState: { errors, isSubmitting } 
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     mode: 'onBlur',
     defaultValues: {
-      categories: selectedCategories, // Initialize with selected categories
+      // Ensure categories is always an array
+      categories: selectedCategories || [],
+      name: '',
+      email: '',
+      company: '',
+      message: '',
+      budget: ''
     },
   });
 
   useEffect(() => {
     setIsClient(true);
     // Update form value when selectedCategories changes
-    setValue('categories', selectedCategories);
+    setValue('categories', selectedCategories || []);
   }, [selectedCategories, setValue]);
 
   const onSubmit = async (data: FormData) => {
@@ -214,8 +222,8 @@ const ContactForm = ({
           </div>
         </div>
       </form>
-      
 
+      
     </>
   );
 };
