@@ -3,6 +3,7 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 module.exports = {
   trailingSlash: true,
+  reactStrictMode: false,
   images: {
     unoptimized: false, // Revert to default image optimization
   },
