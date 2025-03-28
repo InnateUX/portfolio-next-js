@@ -75,7 +75,7 @@ const ContactArea = () => {
               <br />
               <br />
             </div>
-            <div className="row">
+            {/* <div className="row">
               <div className="col-xl-12">
                 <div className="contact-inner__category mb-85">
                   <h4 className="contact-inner__category-title">I'm interested in...</h4>
@@ -95,8 +95,12 @@ const ContactArea = () => {
                   </div>
                 </div>
               </div>
-            </div>
-            <ContactForm />
+            </div> */}
+            <ContactForm 
+              categories={contact_content.categorys}
+              selectedCategories={selectedCategories}
+              onCategoryToggle={toggleSelection}
+            />
           </div>
         </div>
       </div>

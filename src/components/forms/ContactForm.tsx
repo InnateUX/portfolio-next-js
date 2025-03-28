@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,18 @@ interface FormData {
   company: string;
   message: string;
   budget: string;
+  categories: string[]; // Add categories to form data
+}
+
+interface Category {
+  id: string;
+  title: string;
+}
+
+interface ContactFormProps {
+  categories?: Category[]; // Add categories prop
+  selectedCategories?: string[]; // Add selected categories prop
+  onCategoryToggle?: (id: string) => void; // Add category toggle handler
 }
 
 const schema = yup.object({
@@ -20,6 +32,7 @@ const schema = yup.object({
   company: yup.string().required("Company is required"),
   message: yup.string().required("Message is required"),
   budget: yup.string().required("Please select a budget"),
+  categories: yup.array().min(1, "Please select at least one category"), // Add validation for categories
 }).required();
 
 const budgetCategories = [
@@ -31,7 +44,11 @@ const budgetCategories = [
   { id: "greater-than-50k", title: "> $50k" },
 ];
 
-const ContactForm = () => {
+const ContactForm = ({ 
+  categories = [], 
+  selectedCategories = [], 
+  onCategoryToggle 
+}: ContactFormProps) => {
   const [isClient, setIsClient] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
@@ -40,15 +57,21 @@ const ContactForm = () => {
     handleSubmit, 
     reset, 
     setValue, 
+    watch,
     formState: { errors, isSubmitting } 
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     mode: 'onBlur',
+    defaultValues: {
+      categories: selectedCategories, // Initialize with selected categories
+    },
   });
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    // Update form value when selectedCategories changes
+    setValue('categories', selectedCategories);
+  }, [selectedCategories, setValue]);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -117,6 +140,35 @@ const ContactForm = () => {
               </div>
             </div>
 
+            {/* Categories Selection */}
+            {categories.length > 0 && (
+              <div className="col-xl-12">
+                <div className="contact-inner__category mb-45">
+                  <h4 className="contact-inner__category-title">I'm interested in...</h4>
+                  <div className="contact-inner__category-wrapper">
+                    {categories.map((item) => (
+                      <label
+                        key={item.id}
+                        htmlFor={`category-${item.id}`}
+                        className={`contact-category-btn ${selectedCategories.includes(item.id) ? 'active' : ''}`}
+                        onClick={() => onCategoryToggle?.(item.id)}
+                      >
+                        <input
+                          type="checkbox"
+                          id={`category-${item.id}`}
+                          checked={selectedCategories.includes(item.id)}
+                          onChange={() => onCategoryToggle?.(item.id)}
+                          className="hidden-checkbox"
+                        />
+                        {item.title}
+                      </label>
+                    ))}
+                    <p className="form_error">{errors.categories?.message}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Budget Selection */}
             <div className="col-xl-12">
               <div className="contact-inner__category mb-45">
@@ -162,7 +214,8 @@ const ContactForm = () => {
           </div>
         </div>
       </form>
-      <ToastContainer />
+      
+
     </>
   );
 };
