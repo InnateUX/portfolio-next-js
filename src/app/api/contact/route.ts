@@ -1,13 +1,16 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { name, email, company, message, budget, interestedIn } = await req.json();
+    // Parse the request body
+    const data = await req.json();
+    const { name, email, company, message, budget } = data;
 
+    // Create transporter
     const transporter = nodemailer.createTransport({
-      host: 'mail.innateuxdesign.com',
-      port: 465,
+      host: process.env.SMTP_HOST || 'mail.innateuxdesign.com',
+      port: parseInt(process.env.SMTP_PORT || '465'),
       secure: true,
       auth: {
         user: process.env.SMTP_USER,
@@ -15,15 +18,20 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Construct email body
     const emailBody = `
+      New Contact Form Submission:
+      
       Name: ${name}
       Email: ${email}
       Company: ${company}
-      Message: ${message}
-      Budget: ${budget || "Not specified"}  //
-      Interested In: ${interestedIn?.length ? interestedIn.join(", ") : "Not specified"}
+      Budget: ${budget}
+      
+      Message:
+      ${message}
     `;
 
+    // Send email
     await transporter.sendMail({
       from: `"${name}" <${process.env.SMTP_USER}>`,
       to: process.env.RECIPIENT_EMAIL,
@@ -35,6 +43,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Email sent successfully" }, { status: 200 });
   } catch (error) {
     console.error("Error sending email:", error);
-    return NextResponse.json({ message: "Error sending email" }, { status: 500 });
+    return NextResponse.json({ 
+      message: "Error sending email", 
+      error: error instanceof Error ? error.message : "Unknown error" 
+    }, { status: 500 });
   }
 }
