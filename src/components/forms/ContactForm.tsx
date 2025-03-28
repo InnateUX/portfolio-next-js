@@ -92,7 +92,7 @@ const ContactForm = ({
       const result = await response.json();
       
       if (response.ok) {
-        toast.success(result.message || "Message sent successfully!");
+        //toast.success(result.message || "Message sent successfully!");
         reset();
         setActiveCategory(null);
       } else {
@@ -100,7 +100,7 @@ const ContactForm = ({
       }
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error("Something went wrong. Please try again.");
+      //toast.error("Something went wrong. Please try again.");
     }
   };
 
