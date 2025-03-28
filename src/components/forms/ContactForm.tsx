@@ -1,12 +1,11 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import {  toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as yup from "yup";
-import { useForm } from "react-hook-form";
+import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Ensure 'categories' is a string array with a default empty array
 interface FormData {
   name: string;
   email: string;
@@ -27,7 +26,6 @@ interface ContactFormProps {
   onCategoryToggle?: (id: string) => void;
 }
 
-// Update schema to ensure type compatibility
 const schema = yup.object({
   name: yup.string().required("Name is required"),
   email: yup.string().required("Email is required").email("Invalid email"),
@@ -54,7 +52,6 @@ const ContactForm = ({
   const [isClient, setIsClient] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-  // Explicitly type the form with FormData
   const { 
     register, 
     handleSubmit, 
@@ -62,10 +59,9 @@ const ContactForm = ({
     setValue, 
     formState: { errors, isSubmitting } 
   } = useForm<FormData>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema) as Resolver<FormData>,
     mode: 'onBlur',
     defaultValues: {
-      // Ensure categories is always an array
       categories: selectedCategories || [],
       name: '',
       email: '',
@@ -77,7 +73,6 @@ const ContactForm = ({
 
   useEffect(() => {
     setIsClient(true);
-    // Update form value when selectedCategories changes
     setValue('categories', selectedCategories || []);
   }, [selectedCategories, setValue]);
 
@@ -109,7 +104,6 @@ const ContactForm = ({
     setValue('budget', categoryId, { shouldValidate: true });
   };
 
-  // Prevent rendering on server
   if (!isClient) {
     return null;
   }
@@ -148,7 +142,6 @@ const ContactForm = ({
               </div>
             </div>
 
-            {/* Categories Selection */}
             {categories.length > 0 && (
               <div className="col-xl-12">
                 <div className="contact-inner__category mb-45">
@@ -177,7 +170,6 @@ const ContactForm = ({
               </div>
             )}
 
-            {/* Budget Selection */}
             <div className="col-xl-12">
               <div className="contact-inner__category mb-45">
                 <h4 className="contact-inner__category-title">Project budget (USD)</h4>
@@ -207,7 +199,6 @@ const ContactForm = ({
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="col-xxl-12">
               <div className="postbox__comment-btn">
                 <button 
@@ -222,8 +213,6 @@ const ContactForm = ({
           </div>
         </div>
       </form>
-
-      
     </>
   );
 };
