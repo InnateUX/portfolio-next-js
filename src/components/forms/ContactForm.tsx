@@ -49,7 +49,6 @@ const ContactForm = ({
   selectedCategories = [], 
   onCategoryToggle 
 }: ContactFormProps) => {
-  const [isClient, setIsClient] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const { 
@@ -72,7 +71,7 @@ const ContactForm = ({
   });
 
   useEffect(() => {
-    setIsClient(true);
+    // Initialize form values after component mounts
     setValue('categories', selectedCategories || []);
   }, [selectedCategories, setValue]);
 
@@ -104,116 +103,110 @@ const ContactForm = ({
     setValue('budget', categoryId, { shouldValidate: true });
   };
 
-  if (!isClient) {
-    return null;
-  }
-
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="contact-inner__wrapper">
-          <div className="postbox__comment-form">
-            <h3 className="contact-inner__form-title">Request A Quote</h3>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="contact-inner__wrapper">
+        <div className="postbox__comment-form">
+          <h3 className="contact-inner__form-title">Request A Quote</h3>
 
-            <div className="row gx-20">
-              {["name", "company", "email"].map((field, index) => (
-                <div key={index} className={`col-xxl-${field === "email" ? "12" : "6"} col-xl-6 col-lg-6`}>
-                  <div className="postbox__comment-input mb-35">
-                    <input
-                      type="text"
-                      className="inputText"
-                      {...register(field as keyof FormData)}
-                    />
-                    <span className="floating-label">{`Your ${field.charAt(0).toUpperCase() + field.slice(1)}`}</span>
-                    <p className="form_error">{errors[field as keyof FormData]?.message}</p>
-                  </div>
-                </div>
-              ))}
-
-              <div className="col-xxl-12">
-                <div className="postbox__comment-input mb-20">
-                  <textarea
-                    className="textareaText"
-                    {...register("message")}
-                  ></textarea>
-                  <span className="floating-label-2">Your Message</span>
-                  <p className="form_error">{errors.message?.message}</p>
+          <div className="row gx-20">
+            {["name", "company", "email"].map((field) => (
+              <div key={field} className={`col-xxl-${field === "email" ? "12" : "6"} col-xl-6 col-lg-6`}>
+                <div className="postbox__comment-input mb-35">
+                  <input
+                    type={field === "email" ? "email" : "text"}
+                    className="inputText"
+                    {...register(field as keyof FormData)}
+                  />
+                  <span className="floating-label">{`Your ${field.charAt(0).toUpperCase() + field.slice(1)}`}</span>
+                  <p className="form_error">{errors[field as keyof FormData]?.message}</p>
                 </div>
               </div>
-            </div>
-
-            {categories.length > 0 && (
-              <div className="col-xl-12">
-                <div className="contact-inner__category mb-45">
-                  <h4 className="contact-inner__category-title">I'm interested in...</h4>
-                  <div className="contact-inner__category-wrapper">
-                    {categories.map((item) => (
-                      <label
-                        key={item.id}
-                        htmlFor={`category-${item.id}`}
-                        className={`contact-category-btn ${selectedCategories.includes(item.id) ? 'active' : ''}`}
-                        onClick={() => onCategoryToggle?.(item.id)}
-                      >
-                        <input
-                          type="checkbox"
-                          id={`category-${item.id}`}
-                          checked={selectedCategories.includes(item.id)}
-                          onChange={() => onCategoryToggle?.(item.id)}
-                          className="hidden-checkbox"
-                        />
-                        {item.title}
-                      </label>
-                    ))}
-                    <p className="form_error">{errors.categories?.message}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="col-xl-12">
-              <div className="contact-inner__category mb-45">
-                <h4 className="contact-inner__category-title">Project budget (USD)</h4>
-                <div className="contact-inner__category-wrapper">
-                  {budgetCategories.map((item) => (
-                    <label
-                      key={item.id}
-                      htmlFor={item.id}
-                      className={`contact-budget-btn ${activeCategory === item.id ? 'active' : ''}`}
-                      onClick={() => handleBudgetSelect(item.id)}
-                    >
-                      {item.title}
-                    </label>
-                  ))}
-                  {budgetCategories.map((item) => (
-                    <input
-                      key={item.id}
-                      type="radio"
-                      value={item.id}
-                      {...register("budget")}
-                      id={item.id}
-                      hidden
-                    />
-                  ))}
-                  <p className="form_error">{errors.budget?.message}</p>
-                </div>
-              </div>
-            </div>
+            ))}
 
             <div className="col-xxl-12">
-              <div className="postbox__comment-btn">
-                <button 
-                  type="submit" 
-                  className="tp-btn-grey-lg" 
-                  disabled={isSubmitting}
-                >
-                  <span><i>{isSubmitting ? 'Sending...' : 'Send Message'}</i></span>
-                </button>
+              <div className="postbox__comment-input mb-20">
+                <textarea
+                  className="textareaText"
+                  {...register("message")}
+                ></textarea>
+                <span className="floating-label-2">Your Message</span>
+                <p className="form_error">{errors.message?.message}</p>
               </div>
             </div>
           </div>
+
+          {categories.length > 0 && (
+            <div className="col-xl-12">
+              <div className="contact-inner__category mb-45">
+                <h4 className="contact-inner__category-title">I'm interested in...</h4>
+                <div className="contact-inner__category-wrapper">
+                  {categories.map((item) => (
+                    <label
+                      key={item.id}
+                      htmlFor={`category-${item.id}`}
+                      className={`contact-category-btn ${selectedCategories.includes(item.id) ? 'active' : ''}`}
+                      onClick={() => onCategoryToggle?.(item.id)}
+                    >
+                      <input
+                        type="checkbox"
+                        id={`category-${item.id}`}
+                        checked={selectedCategories.includes(item.id)}
+                        onChange={() => onCategoryToggle?.(item.id)}
+                        className="hidden-checkbox"
+                      />
+                      {item.title}
+                    </label>
+                  ))}
+                  <p className="form_error">{errors.categories?.message}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="col-xl-12">
+            <div className="contact-inner__category mb-45">
+              <h4 className="contact-inner__category-title">Project budget (USD)</h4>
+              <div className="contact-inner__category-wrapper">
+                {budgetCategories.map((item) => (
+                  <label
+                    key={item.id}
+                    htmlFor={item.id}
+                    className={`contact-budget-btn ${activeCategory === item.id ? 'active' : ''}`}
+                    onClick={() => handleBudgetSelect(item.id)}
+                  >
+                    {item.title}
+                  </label>
+                ))}
+                {budgetCategories.map((item) => (
+                  <input
+                    key={item.id}
+                    type="radio"
+                    value={item.id}
+                    {...register("budget")}
+                    id={item.id}
+                    hidden
+                  />
+                ))}
+                <p className="form_error">{errors.budget?.message}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-xxl-12">
+            <div className="postbox__comment-btn">
+              <button 
+                type="submit" 
+                className="tp-btn-grey-lg" 
+                disabled={isSubmitting}
+              >
+                <span><i>{isSubmitting ? 'Sending...' : 'Send Message'}</i></span>
+              </button>
+            </div>
+          </div>
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 };
 

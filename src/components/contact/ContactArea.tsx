@@ -1,13 +1,18 @@
 'use client'
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ToastContainer } from 'react-toastify';
+//import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import contact_img from "@/assets/img/contact/infinity.png";
 import contact_flower_img_1 from "@/assets/img/contact/contact-flower.png";
 import contact_flower_img_2 from "@/assets/img/contact/contact-flower-text.png";
-import ContactForm from '../forms/ContactForm';
+import dynamic from 'next/dynamic';
+
+const ContactForm = dynamic(() => import('../forms/ContactForm'), {
+  ssr: false,
+  loading: () => <p>Loading form...</p>
+});
 
 interface DataType {
   subtitle: string;
@@ -49,7 +54,7 @@ const ContactArea = () => {
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div className="contact-inner__area contact-inner__ptb p-relative black-bg-3">
         <div className="container">
           <div className="row justify-content-center">
