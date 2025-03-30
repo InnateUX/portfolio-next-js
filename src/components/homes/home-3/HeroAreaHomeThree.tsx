@@ -110,7 +110,7 @@ const HeroAreaHomeThree = () => {
                       letterSpacing: '1px', 
                       transition: 'font-size 0.3s ease-in-out' 
                     }}>
-                    Naturally Inspired by Nature
+                    Naturally Inspired
                   </h3>
 
                   <div className="tp-hero-3__btn-box tp_wrap_anim d-flex align-items-center justify-content-center">
