@@ -100,7 +100,7 @@ const HeroAreaHomeThree = () => {
                       marginBottom: '1rem',
                       transition: 'font-size 0.3s ease-in-out'
                     }}>
-                    UX/UI Design 
+                    Naturally Inspired
                   </h2>
                   <h3 
                     className="tp-hero-3__title tp-char-animation" 
@@ -110,7 +110,7 @@ const HeroAreaHomeThree = () => {
                       letterSpacing: '1px', 
                       transition: 'font-size 0.3s ease-in-out' 
                     }}>
-                    Naturally Inspired
+                    UX/UI Design
                   </h3>
 
                   <div className="tp-hero-3__btn-box tp_wrap_anim d-flex align-items-center justify-content-center">
