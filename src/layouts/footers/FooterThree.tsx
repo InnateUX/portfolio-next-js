@@ -31,7 +31,7 @@ interface DataType {
 
 const footer_content: DataType = {
   subtitle: "Contact US",
-  title: "Bring Your Vision to Life!",
+  title: "Let's Talk",
   sm_info: (
     <>
       <p className="text-sm sm:text-base lg:text-lg leading-relaxed sm:leading-relaxed">
